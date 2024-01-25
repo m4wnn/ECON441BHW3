@@ -10,6 +10,20 @@
 #       jupytext_version: 1.15.2
 # ---
 
+# %% [markdown]
+"""
+<div style="text-align: left;">
+    <h1>Week 3 - Laboratory</h1>
+    <h4>ECON441B</h3>
+    <div style="padding: 20px 0;">
+        <hr style="border: 0; height: 1px; background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));">
+        <p><em>Mauricio Vargas-Estrada</em><br>
+        Master in Quantitative Economics<br>
+        University of California - Los Angeles</p>
+        <hr style="border: 0; height: 1px; background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));">
+    </div>
+</div>
+"""
 # %%
 import pandas as pd
 import numpy as np
@@ -21,6 +35,10 @@ from pytrends.request import TrendReq
 # Imputer
 from sklearn.impute import KNNImputer
 from sklearn.model_selection import train_test_split
+
+# Disable all warnings
+import warnings
+warnings.filterwarnings('ignore')
 # %% [markdown]
 # # 0.) Clean the Apple Data to get a quarterly series of EPS.
 # %%
@@ -107,9 +125,7 @@ scaler = StandardScaler()
 # %%
 X_scaled = scaler.fit_transform(df)
 # %% [markdown]
-# # 3.) Import data. Train, Test, Holdout (80%,15%,5%)
-# %% [markdown]
-# # 4.) Run a Lasso with lambda of .5. Plot a bar chart.
+# # 3.) Run a Lasso with lambda of .5. Plot a bar chart.
 # %%
 from sklearn.linear_model import Lasso
 # %%
@@ -117,13 +133,17 @@ lasso = Lasso(alpha=0.5)
 # %%
 lasso_result = lasso.fit(X_scaled,y)
 # %% [markdown]
-# # 5.) Do these coefficient magnitudes make sense?
+# # 4.) Do these coefficient magnitudes make sense?
 # %%
 plt.barh(df.columns, lasso_result.coef_)
 plt.title('Lasso Coefficients with $\lambda = 0.5$')
 plt.plot()
 # %% [markdown]
-# # 6.) Run a for loop looking at 10 different Lambdas and plot the coefficient magnitude for each.
+r"""
+Using a $\lambda = 0.5$ all the coefficients are zero. Meaning that we are penalizing the model excessively.
+"""
+# %% [markdown]
+# # 5.) Run a for loop looking at 10 different Lambdas and plot the coefficient magnitude for each.
 # %%
 l_sim = np.linspace(0, 0.5, 1_000)
 coef = np.nan * np.ones((len(l_sim), X_scaled.shape[1]))
@@ -148,7 +168,7 @@ plt.xlabel('$\lambda$', fontsize=20)
 plt.ylabel('Coefficient', fontsize=20)
 
 # %% [markdown]
-# # 7.) Run a cross validation. What is your ideal lambda?
+# # 6.) Run a cross validation. What is your ideal lambda?
 # %%
 from sklearn.linear_model import LassoCV
 # %%
